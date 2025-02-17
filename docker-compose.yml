@@ -1,0 +1,61 @@
+services:
+
+  mongodb:
+    image: mongo
+    mem_limit: 1g
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ${HOME}/dev/data/mongodb:/data/db
+    logging:
+      driver: local
+      options:
+        max-size: 10m
+        max-file: 3
+    env_file: ./management-api/mongo.env
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 60s
+      start_period: 4s
+    networks:
+      - local
+
+  dashboard:
+    container_name: dashboard
+    build:
+      context: ./dashboard
+      dockerfile: ./Dockerfile
+    ports:
+      - 4173:4173
+    networks:
+      - local
+
+  management-api:
+    container_name: management-api
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    build:
+      context: ./management-api
+      dockerfile: ./Dockerfile
+    ports:
+    - 3524:3524
+    networks:
+      - local
+
+  feature-flag-relay:
+    container_name: feature-flag-relay
+    build:
+      context: ./feature-flag-relay
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - local
+
+networks:
+  local:
+    driver: bridge
