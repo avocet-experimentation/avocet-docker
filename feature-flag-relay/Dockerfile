@@ -4,10 +4,9 @@ WORKDIR /app
 
 RUN apk add --no-cache git
 
-RUN git clone --depth=1 https://github.com/avocet-experimentation/feature-flag-relay.git . \
-    && rm -rf package-lock.json \
-    && npm cache clean --force \
-    && npm install
+RUN apk add --no-cache git \
+    && git clone --depth=1 https://github.com/avocet-experimentation/feature-flag-relay.git . \
+    && npm ci
 
 COPY .env .env
 

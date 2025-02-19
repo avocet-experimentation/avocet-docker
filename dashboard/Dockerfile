@@ -4,9 +4,7 @@ WORKDIR /app
 
 RUN apk add --no-cache git \
     && git clone --depth=1 https://github.com/avocet-experimentation/dashboard.git . \
-    && rm -rf package-lock.json \
-    && npm cache clean --force \
-    && npm install
+    && npm ci
 
 COPY .env .env.local
 
