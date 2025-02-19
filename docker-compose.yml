@@ -28,19 +28,27 @@ services:
     build:
       context: ./dashboard
       dockerfile: ./Dockerfile
+    depends_on:
+      - management-api
     ports:
       - 4173:4173
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4173"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     networks:
       - local
 
   management-api:
     container_name: management-api
-    depends_on:
-      mongodb:
-        condition: service_healthy
     build:
       context: ./management-api
       dockerfile: ./Dockerfile
+    depends_on:
+      mongodb:
+        condition: service_healthy
     ports:
     - 3524:3524
     networks:
