@@ -25,8 +25,8 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./.env
 
-COPY --from=builder /app/mongodb/initialize-mongo-indexes.ts ./mongodb
-COPY --from=builder /app/mongodb/insert-initial-data.ts ./mongodb
+COPY --from=builder /app/mongodb/initialize-mongo-indexes.ts ./mongodb/
+COPY --from=builder /app/mongodb/insert-initial-data.ts ./mongodb/
 
 USER node
 
